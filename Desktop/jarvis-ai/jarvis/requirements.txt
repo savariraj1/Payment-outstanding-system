@@ -1,0 +1,9 @@
+openai
+python-dotenv
+SpeechRecognition
+edge-tts
+pygame
+pyttsx3
+requests
+beautifulsoup4
+flask
