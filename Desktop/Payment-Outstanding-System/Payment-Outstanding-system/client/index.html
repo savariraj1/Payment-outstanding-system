@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Payment Outstanding Follow-up System</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body>
+
+<header class="top-header">
+
+    <div class="header-title">
+        <h1>Payment Outstanding Follow-up System</h1>
+    </div>
+
+    <div class="header-actions">
+
+        <span id="userName">
+            Accounts
+        </span>
+
+        <button class="logout-btn" onclick="logout()">
+            🚪 Logout
+        </button>
+
+    </div>
+
+</header>
+    <!-- <header>
+
+        <h1>Payment Outstanding Follow-up System</h1>
+
+    </header> -->
+
+    <main>
+                <!-- ================= Search ================= -->
+
+        <section class="search">
+
+            <input
+                type="text"
+                id="searchBox"
+                placeholder="Search Invoice or Customer">
+
+        </section>
+
+                <!-- ================= Export Buttons ================= -->
+
+        <section class="export-buttons">
+
+            <button onclick="exportExcel()">
+                📊 Export Excel
+            </button>
+
+            <button onclick="exportPDF()">
+                Export PDF
+            </button>
+
+        </section>
+
+        <!-- ================= KPI Cards ================= -->
+
+        <section class="cards">
+
+            <div class="card outstanding">
+                <h3>Total Outstanding</h3>
+                <h2 id="totalOutstanding">₹0</h2>
+            </div>
+
+            <div class="card invoices">
+                <h3>Total Invoices</h3>
+                <h2 id="totalInvoices">0</h2>
+            </div>
+
+            <div class="card pending">
+                <h3>Pending Invoices</h3>
+                <h2 id="pendingInvoices">0</h2>
+            </div>
+
+            <div class="card paid">
+                <h3>Paid Invoices</h3>
+                <h2 id="paidInvoices">0</h2>
+            </div>
+
+            <div class="card paid-amount">
+                <h3>Total Amount Received</h3>
+                <h2 id="paidInvoiceAmount">₹0</h2>
+            </div>
+
+        </section>
+
+        <!-- ================= Charts ================= -->
+
+        <section class="charts">
+
+            <div class="chart-box">
+                <h3>Ageing Distribution</h3>
+                <canvas id="ageingChart"></canvas>
+            </div>
+
+            <div class="chart-box">
+                <h3>Outstanding by Ageing</h3>
+                <canvas id="pieChart"></canvas>
+            </div>
+
+        </section>
+
+        <!-- ================= Invoice Table ================= -->
+
+        <section>
+
+            <table id="invoiceTable">
+
+                <thead>
+                    <tr>
+                        <th>Invoice No</th>
+                        <th>Customer</th>
+                        <th>Due Date</th>
+                        <th>0-30 Days</th>
+                        <th>31-60 Days</th>
+                        <th>61-90 Days</th>
+                        <th>>90 Days</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+
+                <tbody id="invoiceBody">
+
+                    <!-- Dynamic Data -->
+
+                </tbody>
+
+            </table>
+
+        </section>
+
+    </main>
+
+    <!-- Dashboard Script -->
+    <script src="js/dashboard.js"></script>
+
+</body>
+
+</html>
