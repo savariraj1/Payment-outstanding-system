@@ -51,3 +51,45 @@ console.log(rows);
     });
 
 }
+
+async function getOutstandingCustomers() {
+
+    const [rows] = await db.query(`
+        SELECT DISTINCT company_name
+        FROM invoices
+        WHERE outstanding_amount > 0
+    `);
+
+    return rows;
+}
+
+async function getCustomerOutstanding(company) {
+
+    const [rows] = await db.query(
+
+        `
+        SELECT
+            invoice_number AS invoiceNo,
+            customer_name AS customer,
+            company_name AS company,
+            invoice_date AS invoiceDate,
+            due_date AS dueDate,
+            outstanding_amount AS outstanding,
+            ageing_bucket AS ageingBucket,
+            email
+        FROM invoices
+        WHERE company_name = ?
+          AND outstanding_amount > 0
+        ORDER BY due_date
+        `,
+        [company]
+
+    );
+
+    return rows;
+}
+
+module.exports = {
+    getOutstandingCustomers,
+    getCustomerOutstanding
+};

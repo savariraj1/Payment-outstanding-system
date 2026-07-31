@@ -263,61 +263,96 @@ async function loadDashboard() {
         globalFilters.length
         );
 
-        if(compare){
+        if (compare) {
 
-            document.getElementById("previousRow").style.display="flex";
+            document.getElementById("previousRowTitle").style.display = "block";
+            document.getElementById("currentRowTitle").style.display = "block";
 
-            document.getElementById("currentRow").style.display="flex";
+            document.getElementById("previousRow").style.display = "flex";
+            document.getElementById("currentRow").style.display = "flex";
 
-            document.getElementById("prevOutstanding").innerHTML=
-                "₹"+data.previousSummary.totalOutstanding.toLocaleString("en-IN");
+            document.getElementById("filteredRowTitle").style.display = "none";
+            document.getElementById("filteredRow").style.display = "none";
 
-            document.getElementById("prevInvoices").innerHTML=
+            // Previous cards
+
+            document.getElementById("prevOutstanding").innerHTML =
+                "₹" + data.previousSummary.totalOutstanding.toLocaleString("en-IN");
+
+            document.getElementById("prevInvoices").innerHTML =
                 data.previousSummary.totalInvoices;
 
-            document.getElementById("prevPending").innerHTML=
+            document.getElementById("prevPending").innerHTML =
                 data.previousSummary.pendingInvoices;
 
-            document.getElementById("prevPaid").innerHTML=
+            document.getElementById("prevPaid").innerHTML =
                 data.previousSummary.paidInvoices;
 
-            document.getElementById("prevReceived").innerHTML=
-                "₹"+data.previousSummary.paidInvoiceAmount.toLocaleString("en-IN");
+            document.getElementById("prevReceived").innerHTML =
+                "₹" + data.previousSummary.paidInvoiceAmount.toLocaleString("en-IN");
 
-            document.getElementById("prevCreditCount").innerHTML=
+            document.getElementById("prevCreditCount").innerHTML =
                 data.previousSummary.creditNoteCount;
 
-            document.getElementById("prevCreditValue").innerHTML=
-                "₹"+data.previousSummary.creditNoteValue.toLocaleString("en-IN");
+            document.getElementById("prevCreditValue").innerHTML =
+                "₹" + data.previousSummary.creditNoteValue.toLocaleString("en-IN");
 
 
-            document.getElementById("currOutstanding").innerHTML=
-                "₹"+data.currentSummary.totalOutstanding.toLocaleString("en-IN");
+            // Current cards
 
-            document.getElementById("currInvoices").innerHTML=
+            document.getElementById("currOutstanding").innerHTML =
+                "₹" + data.currentSummary.totalOutstanding.toLocaleString("en-IN");
+
+            document.getElementById("currInvoices").innerHTML =
                 data.currentSummary.totalInvoices;
 
-            document.getElementById("currPending").innerHTML=
+            document.getElementById("currPending").innerHTML =
                 data.currentSummary.pendingInvoices;
 
-            document.getElementById("currPaid").innerHTML=
+            document.getElementById("currPaid").innerHTML =
                 data.currentSummary.paidInvoices;
 
-            document.getElementById("currReceived").innerHTML=
-                "₹"+data.currentSummary.paidInvoiceAmount.toLocaleString("en-IN");
+            document.getElementById("currReceived").innerHTML =
+                "₹" + data.currentSummary.paidInvoiceAmount.toLocaleString("en-IN");
 
-            document.getElementById("currCreditCount").innerHTML=
+            document.getElementById("currCreditCount").innerHTML =
                 data.currentSummary.creditNoteCount;
 
-            document.getElementById("currCreditValue").innerHTML=
-                "₹"+data.currentSummary.creditNoteValue.toLocaleString("en-IN");
+            document.getElementById("currCreditValue").innerHTML =
+                "₹" + data.currentSummary.creditNoteValue.toLocaleString("en-IN");
 
         }
-        else{
+        else {
 
-            document.getElementById("previousRow").style.display="none";
+            document.getElementById("previousRowTitle").style.display = "none";
+            document.getElementById("currentRowTitle").style.display = "none";
 
-            document.getElementById("currentRow").style.display="none";
+            document.getElementById("previousRow").style.display = "none";
+            document.getElementById("currentRow").style.display = "none";
+
+            document.getElementById("filteredRowTitle").style.display = "block";
+            document.getElementById("filteredRow").style.display = "flex";
+
+            document.getElementById("filterOutstanding").innerHTML =
+                "₹" + data.totalOutstanding.toLocaleString("en-IN");
+
+            document.getElementById("filterInvoices").innerHTML =
+                data.totalInvoices;
+
+            document.getElementById("filterPending").innerHTML =
+                data.pendingInvoices;
+
+            document.getElementById("filterPaid").innerHTML =
+                data.paidInvoices;
+
+            document.getElementById("filterReceived").innerHTML =
+                "₹" + data.paidInvoiceAmount.toLocaleString("en-IN");
+
+            document.getElementById("filterCreditCount").innerHTML =
+                data.creditNoteCount;
+
+            document.getElementById("filterCreditValue").innerHTML =
+                "₹" + data.creditNoteValue.toLocaleString("en-IN");
 
         }
 

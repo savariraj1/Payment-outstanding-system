@@ -1,5 +1,5 @@
 const transporter = require("./gmail");
-const generateExcel = require("../reports/excelReport");
+const generatePDF = require("../reports/emailPdfReport");
 const db = require("../config/db");
 const calculateAgeing = require("./ageing");
 
@@ -37,7 +37,7 @@ async function sendDailyReport() {
 
     });
 
-    const file = await generateExcel(invoices);
+    const file = await generatePDF(invoices);
 
     await transporter.sendMail({
 
@@ -46,19 +46,13 @@ async function sendDailyReport() {
         to: "archana@tylt.co.in",
 
         subject: "Daily Outstanding Report",
-
         text: "Attached is today's outstanding report.",
 
         attachments: [
-
             {
-
-                filename: "Outstanding_Report.xlsx",
-
+                filename: "Outstanding_Report.pdf",
                 path: file
-
             }
-
         ]
 
     });

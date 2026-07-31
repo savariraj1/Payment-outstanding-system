@@ -99,37 +99,37 @@
 
                 <section class="cards-grid" id="previousRow">
 
-                <div class="card">
+                <div class="card outstanding">
                 <h3>Total Outstanding</h3>
                 <h2 id="prevOutstanding">₹0</h2>
                 </div>
 
-                <div class="card">
+                <div class="card invoices">
                 <h3>Total Invoices</h3>
                 <h2 id="prevInvoices">0</h2>
                 </div>
 
-                <div class="card">
+                <div class="card pending">
                 <h3>Pending</h3>
                 <h2 id="prevPending">0</h2>
                 </div>
 
-                <div class="card">
+                <div class="card paid">
                 <h3>Paid</h3>
                 <h2 id="prevPaid">0</h2>
                 </div>
 
-                <div class="card">
+                <div class="card paid-amount">
                 <h3>Received</h3>
                 <h2 id="prevReceived">₹0</h2>
                 </div>
 
-                <div class="card">
+                <div class="card credit-count">
                 <h3>Credit Notes</h3>
                 <h2 id="prevCreditCount">0</h2>
                 </div>
 
-                <div class="card">
+                <div class="card credit-value">
                 <h3>Credit Value</h3>
                 <h2 id="prevCreditValue">₹0</h2>
                 </div>
@@ -167,8 +167,54 @@
                         <h2 id="currCreditValue">₹0</h2>
                     </div>
                 </section>
-                
 
+                <h3 id="filteredRowTitle" style="display:none">
+                    Filtered Summary
+                </h3>
+
+                <section
+                    class="cards-grid"
+                    id="filteredRow"
+                    style="display:none"
+                >
+
+                    <div class="card outstanding">
+                        <h3>Total Outstanding</h3>
+                        <h2 id="filterOutstanding">₹0</h2>
+                    </div>
+
+                    <div class="card invoices">
+                        <h3>Total Invoices</h3>
+                        <h2 id="filterInvoices">0</h2>
+                    </div>
+
+                    <div class="card pending">
+                        <h3>Pending</h3>
+                        <h2 id="filterPending">0</h2>
+                    </div>
+
+                    <div class="card paid">
+                        <h3>Paid</h3>
+                        <h2 id="filterPaid">0</h2>
+                    </div>
+
+                    <div class="card paid-amount">
+                        <h3>Total Received</h3>
+                        <h2 id="filterReceived">₹0</h2>
+                    </div>
+
+                    <div class="card credit-count">
+                        <h3>Credit Notes</h3>
+                        <h2 id="filterCreditCount">0</h2>
+                    </div>
+
+                    <div class="card credit-value">
+                        <h3>Credit Note Value</h3>
+                        <h2 id="filterCreditValue">₹0</h2>
+                    </div>
+
+                </section>
+                
                 <!-- Charts Section -->
                 <section class="charts-grid">
                     <div class="chart-box">
