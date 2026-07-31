@@ -5,6 +5,7 @@ document
 .addEventListener("submit", login);
 
 async function login(e){
+    console.log('hii')
 
     e.preventDefault();
 
@@ -14,6 +15,7 @@ async function login(e){
     const password =
         document.getElementById("password").value;
 
+    console.log('Detail:', email , password )
     const response =
         await fetch(`${API}/auth/login`,{
 
@@ -32,6 +34,7 @@ async function login(e){
             })
 
         });
+        console.log('called the api ')
         const data = await response.json();
 
 if (data.success) {

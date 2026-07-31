@@ -86,12 +86,23 @@ async function sendReminder(customerName, invoices, email) {
 
     }
 
+    let emailList = [];
+
+    if (Array.isArray(email)) {
+        emailList = email;
+    } else {
+        emailList = (email || "")
+            .split(/[;,]/)
+            .map(e => e.trim())
+            .filter(Boolean);
+    }
+
     // Send email
     const info = await transporter.sendMail({
 
         from: process.env.GMAIL_USER,
 
-        to: email,
+        to: emailList,
 
         cc: ccList,
 

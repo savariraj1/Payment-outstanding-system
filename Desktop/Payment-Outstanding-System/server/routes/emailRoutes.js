@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const emailController = require("../controllers/emailController");
-const sheetService = require("../services/sheetService");
+const invoiceService=require("../services/invoiceService");
 const emailService = require("../services/emailService");
 
 const {
@@ -26,13 +26,8 @@ router.post(
         console.log("Request Body:", req.body);
         const { customer } = req.body;
 
-const invoices = await sheetService.getInvoices();
-
-// Get ALL outstanding invoices for the selected customer
-const customerInvoices = invoices.filter(inv =>
-    inv.customer === customer &&
-    Number(inv.outstanding) > 0
-);
+    const customerInvoices =
+    await invoiceService.getCustomerOutstanding(customer);
 
 if (customerInvoices.length === 0) {
     return res.status(404).json({
@@ -42,31 +37,34 @@ if (customerInvoices.length === 0) {
 }
 
 // Use the first invoice only to get customer details
-const invoice = customerInvoices[0];
+const emailList = [
+    ...new Set(
+        customerInvoices
+            .map(inv => (inv.email || "").trim())
+            .filter(email => email !== "")
+    )
+];
 
-if (!invoice.email) {
+if (emailList.length === 0) {
     return res.status(400).json({
         success: false,
-        message: "Customer email missing"
+        message: "No customer email found."
     });
 }
 
-        console.log("=================================");
-        console.log("Invoice Selected:");
-        console.log(invoice);
+console.log("Emails Found:", emailList);
 
-        console.log("Customer:", invoice.customer);
-        console.log("Customer Email:", invoice.email);
-        console.log("Outstanding Invoices:", customerInvoices.length);
-        console.log("=================================");
+       console.log("=================================");
+console.log("Emails Found:", emailList);
+console.log("Outstanding Invoices:", customerInvoices.length);
+console.log("=================================");
 
-
-        // Send one email with all invoices
-        const info = await emailService.sendReminder(
-            invoice.customer,
-            customerInvoices,
-            invoice.email
-        );
+// Send one email with all invoices
+const info = await emailService.sendReminder(
+    customerInvoices[0].company,
+    customerInvoices,
+    emailList
+);
 
         console.log("===== CUSTOMER INVOICES =====");
         console.log(JSON.stringify(customerInvoices, null, 2));
@@ -74,11 +72,7 @@ if (!invoice.email) {
 
         console.log("Email Sent:", info.messageId);
 
-        // Update reminder date for each invoice
-        for (const inv of customerInvoices) {
-            await sheetService.updateLastReminder(inv.rowNumber);
-        }
-
+    
         res.json({
             success: true,
             message: "Reminder sent successfully."

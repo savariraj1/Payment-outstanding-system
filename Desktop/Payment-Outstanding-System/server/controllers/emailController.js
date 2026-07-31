@@ -35,61 +35,64 @@
 
 // };
 
-const sheetService = require("../services/sheetService");
+const invoiceService = require("../services/invoiceService");
 const emailService = require("../services/emailService");
 
 exports.sendTestEmail = async (req, res) => {
 
     try {
 
-        const invoices = await sheetService.getInvoices();
+        // change this customer name to one existing in DB
+        const customer = "ABC";
 
-        if (invoices.length === 0) {
+        const customerInvoices =
+            await invoiceService.getCustomerOutstanding(customer);
+
+        if (customerInvoices.length === 0) {
             return res.status(404).json({
                 success: false,
                 message: "No invoices found."
             });
         }
 
-        // First invoice
-        const invoice = invoices[0];
+        // Collect all valid emails
+        const emailList = [
+            ...new Set(
+                customerInvoices
+                    .map(inv => (inv.email || "").trim())
+                    .filter(email => email !== "")
+            )
+        ];
 
-        // Check email exists
-        if (!invoice.email) {
+        if (emailList.length === 0) {
             return res.status(400).json({
                 success: false,
-                message: "Customer email missing in Google Sheet."
+                message: "No customer email found."
             });
         }
 
-        // All outstanding invoices for this customer
-        const customerInvoices = invoices.filter(inv =>
-            inv.customer === invoice.customer &&
-            Number(inv.outstanding) > 0
-        );
-
-        console.log("Customer:", invoice.customer);
-        console.log("Email:", invoice.email);
+        console.log("Emails Found:", emailList);
 
         const info = await emailService.sendReminder(
-            invoice.customer,
+            customerInvoices[0].company || customerInvoices[0].customer,
             customerInvoices,
-            invoice.email
+            emailList
         );
 
         res.json({
             success: true,
-            message: "Test email sent successfully.",
+            message: "Test email sent.",
             messageId: info.messageId
         });
 
-    } catch (err) {
+    }
+    catch(err){
 
-        console.error(err);
+        console.log(err);
 
         res.status(500).json({
-            success: false,
-            message: err.message
+            success:false,
+            message:err.message
         });
 
     }

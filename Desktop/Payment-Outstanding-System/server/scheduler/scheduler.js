@@ -4,6 +4,10 @@ const {
     sendAutomaticReminders
 } = require("../services/reminderService");
 
+const {
+sendDailyReport
+}=require("../services/dailyReportService");
+
 // =====================================
 // DAILY
 // Runs every day at 9:00 AM
@@ -16,6 +20,8 @@ cron.schedule("0 9 * * *", async () => {
     console.log("=================================");
 
     await sendAutomaticReminders();
+
+    await sendDailyReport();
 
 });
 

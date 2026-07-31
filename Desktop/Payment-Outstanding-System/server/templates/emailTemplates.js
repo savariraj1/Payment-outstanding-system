@@ -174,6 +174,7 @@ function getEmailTemplate(customerName, invoices) {
 
     let rows = "";
 
+
     invoices.forEach(inv => {
         console.log("--------------------------------");
         console.log("Invoice :", inv.invoiceNo);
@@ -182,12 +183,21 @@ function getEmailTemplate(customerName, invoices) {
         console.log("Bucket :", inv.ageingBucket);
         console.log("--------------------------------");
 
-        const outstanding = Number(inv.outstanding || 0);
+        const outstanding = Number(inv.outstanding  || 0);
 
         let bucket0to30 = "";
         let bucket31to60 = "";
         let bucket61to90 = "";
         let bucket90Plus = "";
+
+        const invoiceDate = inv.invoiceDate
+            ? new Date(inv.invoiceDate).toLocaleDateString("en-GB")
+            : "";
+
+        const dueDate = inv.dueDate
+            ? new Date(inv.dueDate).toLocaleDateString("en-GB")
+            : "";
+
 
         // switch (inv.ageingBucket) {
 
@@ -242,8 +252,8 @@ function getEmailTemplate(customerName, invoices) {
         <tr>
             <td>${inv.invoiceNo}</td>
             <td>${inv.customer}</td>
-            <td>${inv.invoiceDate}</td>
-            <td>${inv.dueDate}</td>
+            <td>${invoiceDate}</td>
+            <td>${dueDate}</td>
             <td align="right">${bucket0to30}</td>
             <td align="right">${bucket31to60}</td>
             <td align="right">${bucket61to90}</td>

@@ -1,155 +1,353 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Payment Outstanding Follow-up System</title>
 
+    <!-- Google Fonts for Modern Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="css/style.css">
-
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 </head>
-
 <body>
 
-<header class="top-header">
+<div class="layout">
 
-    <div class="header-title">
-        <h1>Payment Outstanding Follow-up System</h1>
-    </div>
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div class="sidebar-top">
+            <div class="logo">
+                <span class="logo-icon">💼</span>
+                <h2>Payment System</h2>
+            </div>
 
-    <div class="header-actions">
+            <ul class="menu">
+                <li class="active" id="dashboardMenu">
+                    <a href="#" onclick="showDashboard()">
+                        <span class="icon">📊</span> Dashboard
+                    </a>
+                </li>
+                <li id="invoiceMenu">
+                    <a href="#" onclick="showInvoices()">
+                        <span class="icon">📄</span> Invoices
+                    </a>
+                </li>
+            </ul>
+        </div>
 
-        <span id="userName">
-            Accounts
-        </span>
-
-        <button class="logout-btn" onclick="logout()">
-            🚪 Logout
-        </button>
-
-    </div>
-
-</header>
-    <!-- <header>
-
-        <h1>Payment Outstanding Follow-up System</h1>
-
-    </header> -->
-
-    <main>
-                <!-- ================= Search ================= -->
-
-        <section class="search">
-
-            <input
-                type="text"
-                id="searchBox"
-                placeholder="Search Invoice or Customer">
-
-        </section>
-
-                <!-- ================= Export Buttons ================= -->
-
-        <section class="export-buttons">
-
-            <button onclick="exportExcel()">
-                📊 Export Excel
+        <div class="sidebar-footer">
+            <button class="logout-btn sidebar-logout" onclick="logout()">
+                🚪 Logout
             </button>
+        </div>
+    </aside>
 
-            <button onclick="exportPDF()">
-                Export PDF
-            </button>
+    <!-- Main Content Area -->
+    <div class="content">
 
-        </section>
+        <!-- Top Header -->
+        <header class="top-header">
+            <div class="header-title">
+                <h1 id="pageTitle">Dashboard</h1>
+            </div>
+            <div class="header-actions">
+                <span id="userName" class="user-badge">👤 Accounts</span>
+            </div>
+        </header>
 
-        <!-- ================= KPI Cards ================= -->
+        <main class="main-container">
 
-        <section class="cards">
+            <!-- ================= DASHBOARD SECTION ================= -->
+            <div id="dashboardSection" class="view-section active">
 
-            <div class="card outstanding">
+                <!-- Toolbar Card -->
+                <section class="toolbar-card">
+                    <div class="global-filter">
+                        <div class="chip-container" id="globalChipContainer">
+                            <div class="chips" id="globalChips"></div>
+                            <input id="globalInput" class="chip-input" placeholder="Type search term and press Enter...">
+                        </div>
+
+                        <div class="date-filter">
+                            <input type="date" id="startDate" aria-label="Start Date">
+                            <span class="date-separator">—</span>
+                            <input type="date" id="endDate" aria-label="End Date">
+                        </div>
+                    </div>
+
+                    <div class="toolbar-buttons">
+                        <!-- <button class="btn btn-secondary" onclick="document.getElementById('excelFile').click()">
+                            📥 Import Excel
+                        </button> -->
+                        <button class="btn btn-primary" onclick="exportExcel()">
+                            📊 Export Excel
+                        </button>
+                        <button class="btn btn-accent" onclick="exportPDF()">
+                            📄 Export PDF
+                        </button>
+                    </div>
+
+                    <input type="file" id="excelFile" hidden accept=".xlsx,.xls" onchange="uploadExcel()">
+                </section>
+
+                <!-- KPI Cards Grid -->
+                <h3 id="previousRowTitle">Previous Import Snapshot</h3>
+
+                <section class="cards-grid" id="previousRow">
+
+                <div class="card">
                 <h3>Total Outstanding</h3>
-                <h2 id="totalOutstanding">₹0</h2>
-            </div>
+                <h2 id="prevOutstanding">₹0</h2>
+                </div>
 
-            <div class="card invoices">
+                <div class="card">
                 <h3>Total Invoices</h3>
-                <h2 id="totalInvoices">0</h2>
+                <h2 id="prevInvoices">0</h2>
+                </div>
+
+                <div class="card">
+                <h3>Pending</h3>
+                <h2 id="prevPending">0</h2>
+                </div>
+
+                <div class="card">
+                <h3>Paid</h3>
+                <h2 id="prevPaid">0</h2>
+                </div>
+
+                <div class="card">
+                <h3>Received</h3>
+                <h2 id="prevReceived">₹0</h2>
+                </div>
+
+                <div class="card">
+                <h3>Credit Notes</h3>
+                <h2 id="prevCreditCount">0</h2>
+                </div>
+
+                <div class="card">
+                <h3>Credit Value</h3>
+                <h2 id="prevCreditValue">₹0</h2>
+                </div>
+
+                </section>
+
+                <h3 id="currentRowTitle">Current Import Snapshot</h3>
+                <section class="cards-grid"  id="currentRow">
+                    <div class="card outstanding">
+                        <h3>Total Outstanding</h3>
+                        <h2 id="currOutstanding">₹0</h2>
+                    </div>
+                    <div class="card invoices">
+                        <h3>Total Invoices</h3>
+                        <h2 id="currInvoices">0</h2>
+                    </div>
+                    <div class="card pending">
+                        <h3>Pending Invoices</h3>
+                        <h2 id="currPending">0</h2>
+                    </div>
+                    <div class="card paid">
+                        <h3>Paid Invoices</h3>
+                        <h2 id="currPaid">0</h2>
+                    </div>
+                    <div class="card paid-amount">
+                        <h3>Total Received</h3>
+                        <h2 id="currReceived">₹0</h2>
+                    </div>
+                    <div class="card credit-count">
+                        <h3>Credit Notes</h3>
+                        <h2 id="currCreditCount">0</h2>
+                    </div>
+                    <div class="card credit-value">
+                        <h3>Credit Note Value</h3>
+                        <h2 id="currCreditValue">₹0</h2>
+                    </div>
+                </section>
+                
+
+                <!-- Charts Section -->
+                <section class="charts-grid">
+                    <div class="chart-box">
+                        <div class="chart-header">
+                            <h3>Ageing Distribution</h3>
+                        </div>
+                        <div class="chart-wrapper">
+                            <canvas id="ageingChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="chart-box">
+                        <div class="chart-header">
+                            <h3>Outstanding by Ageing</h3>
+                        </div>
+                        <div class="chart-wrapper">
+                            <canvas id="pieChart"></canvas>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Dashboard Invoice Table Section -->
+                <section class="table-section-card">
+                    <!-- <div class="table-toolbar">
+                        <h3>Recent Outstanding Records</h3>
+                        <div class="chip-container">
+                            <div class="chips" id="tableChips"></div>
+                            <input id="tableInput" class="chip-input" placeholder="Filter table records...">
+                        </div>
+                    </div> -->
+
+                    <div class="table-responsive">
+                        <table class="modern-table">
+                            <thead>
+
+                            <tr>
+
+                            <th>Company</th>
+
+                            <th>0-30 Days</th>
+
+                            <th>31-60 Days</th>
+
+                            <th>61-90 Days</th>
+
+                            <th>>90 Days</th>
+
+                            <th>Total</th>
+
+                            <th>Action</th>
+
+                            </tr>
+
+                            </thead>
+
+                            <tbody id="dashboardSummaryBody">
+
+                            </tbody>
+                           
+                        </table>
+                    </div>
+                </section>
             </div>
 
-            <div class="card pending">
-                <h3>Pending Invoices</h3>
-                <h2 id="pendingInvoices">0</h2>
+            <!-- ================= INVOICE SECTION ================= -->
+            <div id="invoiceSection" class="view-section" style="display: none;">
+
+                <!-- Invoice Management Toolbar -->
+                <section class="toolbar-card">
+                    <div class="global-filter">
+                        <div class="chip-container" id="invoiceChipContainer">
+                            <div class="chips" id="invoiceChips"></div>
+                            <input id="invoiceInput" class="chip-input" placeholder="Search invoices...">
+                        </div>
+
+                        <div class="date-filter">
+                            <input type="date" id="invoiceStartDate">
+                            <span class="date-separator">—</span>
+                            <input type="date" id="invoiceEndDate">
+                        </div>
+                    </div>
+
+                    <div class="toolbar-buttons">
+                        <button class="btn btn-secondary" onclick="document.getElementById('excelFile').click()">
+                            📥 Import Excel
+                        </button>
+                        <!-- <button class="btn btn-primary" onclick="exportExcel()">
+                            📊 Export Excel
+                        </button>
+                        <button class="btn btn-accent" onclick="exportPDF()">
+                            📄 Export PDF
+                        </button> -->
+                    </div>
+                </section>
+
+                <!-- Full Invoices Table Section -->
+                <section class="table-section-card">
+                    <div class="table-toolbar">
+                        <h3>All Invoices Directory</h3>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="modern-table">
+                            <thead>
+                                <tr>
+                                    <th>Invoice No</th>
+                                    <th>Customer</th>
+                                    <th>Company</th>
+                                    <th class="text-right">Invoice Amount</th>
+                                    <th class="text-right">Received</th>
+                                    <th class="text-right">Credit Note</th>
+                                    <th class="text-right">Outstanding</th>
+                                    <th>Due Date</th>
+                                    <th>Ageing</th>
+                                    <th>Status</th>
+                                    <th class="text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="invoiceSectionBody">
+                                <!-- Dynamic JS Rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
             </div>
 
-            <div class="card paid">
-                <h3>Paid Invoices</h3>
-                <h2 id="paidInvoices">0</h2>
+        </main>
+    </div>
+</div>
+
+<!-- ================= EDIT INVOICE MODAL ================= -->
+<div id="editModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Update Payment Details</h2>
+            <span class="close-modal-btn" onclick="closeModal()">×</span>
+        </div>
+
+        <input type="hidden" id="editInvoiceId">
+
+        <div class="modal-body">
+            <div class="form-row">
+                <label for="editStatus">Status</label>
+                <select id="editStatus">
+                    <option value="Unpaid">Unpaid</option>
+                    <option value="Part Paid">Part Paid</option>
+                    <option value="Paid">Paid</option>
+                </select>
             </div>
 
-            <div class="card paid-amount">
-                <h3>Total Amount Received</h3>
-                <h2 id="paidInvoiceAmount">₹0</h2>
+            <div class="form-row">
+                <label for="editReceivedAmount">Amount Received</label>
+                <input type="number" id="editReceivedAmount" value="0" min="0">
             </div>
 
-        </section>
-
-        <!-- ================= Charts ================= -->
-
-        <section class="charts">
-
-            <div class="chart-box">
-                <h3>Ageing Distribution</h3>
-                <canvas id="ageingChart"></canvas>
+            <div class="form-row">
+                <label for="editCreditAmount">Credit Note</label>
+                <input type="number" id="editCreditAmount" value="0" min="0">
             </div>
 
-            <div class="chart-box">
-                <h3>Outstanding by Ageing</h3>
-                <canvas id="pieChart"></canvas>
+            <div class="form-row">
+                <label for="editReceivedDate">Received Date</label>
+                <input type="date" id="editReceivedDate">
             </div>
 
-        </section>
+            <div class="form-row">
+                <label for="editRemarks">Remarks</label>
+                <textarea id="editRemarks" rows="3" placeholder="Add payment notes..."></textarea>
+            </div>
+        </div>
 
-        <!-- ================= Invoice Table ================= -->
+        <div class="modal-buttons">
+            <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+            <button class="btn btn-primary" onclick="saveInvoice()">Save Changes</button>
+        </div>
+    </div>
+</div>
 
-        <section>
-
-            <table id="invoiceTable">
-
-                <thead>
-                    <tr>
-                        <th>Invoice No</th>
-                        <th>Customer</th>
-                        <th>Due Date</th>
-                        <th>0-30 Days</th>
-                        <th>31-60 Days</th>
-                        <th>61-90 Days</th>
-                        <th>>90 Days</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                    </thead>
-
-                <tbody id="invoiceBody">
-
-                    <!-- Dynamic Data -->
-
-                </tbody>
-
-            </table>
-
-        </section>
-
-    </main>
-
-    <!-- Dashboard Script -->
-    <script src="js/dashboard.js"></script>
-
+<!-- Dashboard Script -->
+<script src="js/dashboard.js"></script>
 </body>
-
 </html>

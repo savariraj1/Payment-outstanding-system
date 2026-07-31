@@ -16,19 +16,24 @@ function authenticateToken(req, res, next) {
 
     const token = authHeader.split(" ")[1];
 
+    console.log("JWT_SECRET:", process.env.JWT_SECRET);
+    console.log("Token:", token);
+
     jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
 
         if (err) {
+            console.log("JWT ERROR:", err);
             return res.status(403).json({
                 success: false,
-                message: "Invalid or expired token"
+                message: err.message
             });
         }
+
+        console.log("Decoded User:", user);
 
         req.user = user;
 
         next();
-
     });
 
 }

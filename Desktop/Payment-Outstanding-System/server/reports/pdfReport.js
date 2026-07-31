@@ -303,7 +303,7 @@ const columns = [
 
     { title: "Received", key: "paidAmount", width: 80 },
 
-    { title: "Status", key: "status", width: 40 }
+    { title: "Status", key: "status", width: 60 }
 
 ];
 
@@ -427,9 +427,9 @@ invoices.forEach((inv, index) => {
 
         inv.customer,
 
-        inv.invoiceDate,
+        formatDate(inv.invoiceDate),
 
-        inv.dueDate,
+        formatDate(inv.dueDate),
 
         formatAmount(amount),
 
@@ -699,3 +699,12 @@ doc.end();
 }
 
 module.exports = generatePDF;
+
+function formatDate(date) {
+
+    if (!date) return "";
+
+    return new Date(date)
+        .toLocaleDateString("en-GB");
+
+}

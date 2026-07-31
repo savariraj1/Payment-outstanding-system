@@ -1,90 +1,127 @@
-// const sheetService = require("../services/sheetService");
-
-// exports.getOutstanding = async (req, res) => {
-//     try {
-//         const invoices = await sheetService.getInvoices();
-
-//         res.json({
-//             success: true,
-//             count: invoices.length,
-//             data: invoices
-//         });
-
-//     } catch (error) {
-//         res.status(500).json({
-//             success: false,
-//             message: error.message
-//         });
-//     }
-// };
-
-const sheetService = require("../services/sheetService");
+const db = require("../config/db");
+const calculateAgeing = require("../services/ageing");
 
 exports.getOutstanding = async (req, res) => {
+
     try {
 
-        const invoices = await sheetService.getInvoices();
+       const filters = req.query.filter || [];
 
-        const customers = {};
+        const start = req.query.start;
 
-        invoices.forEach(inv => {
+        const end = req.query.end;
 
-            if (!customers[inv.customer]) {
+        let where = [];
 
-                customers[inv.customer] = {
-                    invoiceNo: [],
-                    customer: inv.customer,
-                    dueDate: inv.dueDate,
-                    days0to30: 0,
-                    days31to60: 0,
-                    days61to90: 0,
-                    days90Plus: 0,
-                    status: inv.status
-                };
+        let values = [];
 
-            }
+        const filterArray = Array.isArray(filters)
+            ? filters
+            : filters
+            ? [filters]
+            : [];
 
-            customers[inv.customer].invoiceNo.push(inv.invoiceNo);
+        filterArray.forEach(filter=>{
 
-            switch (inv.ageingBucket) {
+            where.push(`(
 
-                case "0-30":
-                    customers[inv.customer].days0to30 += Number(inv.outstanding);
-                    break;
+                invoice_number LIKE ?
 
-                case "31-60":
-                    customers[inv.customer].days31to60 += Number(inv.outstanding);
-                    break;
+                OR customer_name LIKE ?
 
-                case "61-90":
-                    customers[inv.customer].days61to90 += Number(inv.outstanding);
-                    break;
+                OR company_name LIKE ?
 
-                default:
-                    customers[inv.customer].days90Plus += Number(inv.outstanding);
-                    break;
+                OR payment_status LIKE ?
 
-            }
+                OR remarks LIKE ?
+
+            )`);
+
+            for(let i=0;i<5;i++)
+                values.push(`%${filter}%`);
 
         });
 
-        const result = Object.values(customers).map(c => ({
-            invoiceNo: c.invoiceNo.join("/"),
-            customer: c.customer,
-            dueDate: c.dueDate,
-            days0to30: c.days0to30,
-            days31to60: c.days31to60,
-            days61to90: c.days61to90,
-            days90Plus: c.days90Plus,
-            status: c.status
-        }));
+        if(start){
+
+            where.push(`DATE(due_date)>=?`);
+
+            values.push(start);
+
+        }
+
+        if(end){
+
+            where.push(`DATE(due_date)<=?`);
+
+            values.push(end);
+
+        }
+
+        let sql=`
+
+        SELECT *
+
+        FROM invoices
+
+        `;
+
+        if(where.length){
+
+            sql+=" WHERE "+where.join(" AND ");
+
+        }
+
+        sql+=" ORDER BY due_date ASC";
+
+        const [rows]=await db.query(sql,values);
+
+        const result = rows.map(inv => {
+
+            const ageing = calculateAgeing(inv.due_date);
+
+            return {
+
+                id: inv.id,
+
+                invoiceNo: inv.invoice_number,
+
+                customer: inv.customer_name,
+
+                company: inv.company_name,
+
+                dueDate: inv.due_date,
+
+                ageingBucket: ageing.bucket,
+
+                ageingDays: ageing.days,
+
+                invoiceAmount: Number(inv.invoice_amount),
+
+                received: Number(inv.received_amount),
+
+                creditNote: Number(inv.credit_note_amount),
+
+                outstanding: Number(inv.outstanding_amount),
+
+                status: inv.payment_status,
+
+                remarks: inv.remarks,
+
+                email: inv.Email
+
+            };
+
+        });
 
         res.json({
             success: true,
             data: result
         });
 
-    } catch (err) {
+    }
+
+    catch (err) {
 
         console.error(err);
 
@@ -94,4 +131,5 @@ exports.getOutstanding = async (req, res) => {
         });
 
     }
+
 };

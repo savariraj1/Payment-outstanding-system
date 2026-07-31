@@ -1,4 +1,5 @@
 const ExcelJS = require("exceljs");
+const path = require("path");
 
 async function generateExcel(invoices, res) {
 
@@ -93,19 +94,35 @@ async function generateExcel(invoices, res) {
 
     });
 
-    res.setHeader(
-        "Content-Type",
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    // Download in browser
+    if (res) {
+
+        res.setHeader(
+            "Content-Type",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        );
+
+        res.setHeader(
+            "Content-Disposition",
+            "attachment; filename=Outstanding_Report.xlsx"
+        );
+
+        await workbook.xlsx.write(res);
+
+        res.end();
+
+        return;
+    }
+
+    // Save locally (used by scheduler)
+    const filePath = path.join(
+        __dirname,
+        "../uploads/Outstanding_Report.xlsx"
     );
 
-    res.setHeader(
-        "Content-Disposition",
-        "attachment; filename=Outstanding_Report.xlsx"
-    );
+    await workbook.xlsx.writeFile(filePath);
 
-    await workbook.xlsx.write(res);
-
-    res.end();
+    return filePath;
 
 }
 
